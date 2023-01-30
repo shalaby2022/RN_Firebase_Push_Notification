@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import {SafeAreaView, StyleSheet, Text} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
-
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
@@ -31,10 +30,11 @@ const App = () => {
     requestUserPermission();
     PushNotification.createChannel(
       {
-        channelId: 'channel-id', // (required)
-        channelName: 'My channel', // (required)
+        channelId: 'channel-2', // (required)
+        channelName: 'My_channel', // (required)
         playSound: true, // (optional) default: true
         vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+        soundName: 'thunder', // (optional) See `soundName` parameter of `localNotification` function
       },
       created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
     );
@@ -42,11 +42,11 @@ const App = () => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('messaging', remoteMessage);
       PushNotification.localNotification({
-        channelId: 'channel-id',
+        channelId: 'channel-2',
         title: remoteMessage.notification.title, // (optional)
         message: remoteMessage.notification.body, // (required)
         playSound: true, // (optional) default: true
-        soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
+        soundName: 'thunder', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
       });
     });
 
