@@ -1,10 +1,46 @@
-import React, {useEffect} from 'react';
-import {SafeAreaView, StyleSheet, Text} from 'react-native';
+import 'react-native-gesture-handler';
+import React, {useContext, useEffect, useState} from 'react';
+import {View, ActivityIndicator, SafeAreaView} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import Chat from './src/screens/Chat/Chat';
+import Home from './src/screens/Home/Home';
+import SignIn from './src/screens/SignIn/SignIn';
+import SignUp from './src/screens/SignUp/SignUp';
+import styles from './styles';
+import {
+  AuthenticatedUserContext,
+  AuthenticatedUserProvider,
+} from './src/Context/AuthContext';
 
-const App = () => {
+// firebase auth
+// import { onAuthStateChanged } from 'firebase/auth';
+// import { auth } from './config/firebase';
+
+const Stack = createStackNavigator();
+
+const ChatStack = () => {
+  return (
+    <Stack.Navigator defaultScreenOptions={Home}>
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Chat" component={Chat} />
+    </Stack.Navigator>
+  );
+};
+
+const AuthStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Login" component={SignIn} />
+      <Stack.Screen name="Signup" component={SignUp} />
+    </Stack.Navigator>
+  );
+};
+
+const RootNavigator = () => {
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission({
       alert: true,
@@ -79,32 +115,39 @@ const App = () => {
     console.log('Message handled in the background!', remoteMessage);
   });
 
+  const {user, setUser} = useContext(AuthenticatedUserContext);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // useEffect(() => {
+  //   const unsubscribeAuth = onAuthStateChanged(
+  //     auth,
+  //     async authenticatedUser => {
+  //       authenticatedUser ? setUser(authenticatedUser) : setUser(null);
+  //       setIsLoading(false);
+  //     },
+  //   );
+  //   return unsubscribeAuth;
+  // }, [user]);
+
+  if (!isLoading) {
+    return (
+      <View style={styles().AcivIndicator}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
-    <SafeAreaView style={styles.Container}>
-      <Text style={styles.sectionDescription}>
-        Edit <Text style={styles.highlight}>App.jsx</Text> to change this screen
-        and then come back to see your edits.
-      </Text>
-    </SafeAreaView>
+    <NavigationContainer>
+      {user ? <ChatStack /> : <AuthStack />}
+    </NavigationContainer>
   );
 };
 
-const styles = StyleSheet.create({
-  Container: {
-    flex: 1,
-    marginTop: 32,
-    padding: 10,
-    alignSelf: 'center',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    color: 'red',
-    fontWeight: '700',
-  },
-});
-
-export default App;
+export default () => {
+  return (
+    <AuthenticatedUserProvider>
+      <RootNavigator />
+    </AuthenticatedUserProvider>
+  );
+};
