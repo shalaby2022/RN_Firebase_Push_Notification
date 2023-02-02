@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, {useContext, useEffect, useState} from 'react';
-import {View, ActivityIndicator, SafeAreaView} from 'react-native';
+import {View, ActivityIndicator, Text} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
@@ -17,8 +17,7 @@ import {
 } from './src/Context/AuthContext';
 
 // firebase auth
-// import { onAuthStateChanged } from 'firebase/auth';
-// import { auth } from './config/firebase';
+import auth from '@react-native-firebase/auth';
 
 const Stack = createStackNavigator();
 
@@ -64,6 +63,11 @@ const RootNavigator = () => {
 
   useEffect(() => {
     requestUserPermission();
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage =>
+        remoteMessage ? console.log('remoteMessage') : null,
+      );
     PushNotification.createChannel(
       {
         channelId: 'channel-2', // (required)
@@ -115,33 +119,29 @@ const RootNavigator = () => {
     console.log('Message handled in the background!', remoteMessage);
   });
 
-  const {user, setUser} = useContext(AuthenticatedUserContext);
-  const [isLoading, setIsLoading] = useState(true);
+  const {user, setUser, isLoading} = useContext(AuthenticatedUserContext);
 
-  // useEffect(() => {
-  //   const unsubscribeAuth = onAuthStateChanged(
-  //     auth,
-  //     async authenticatedUser => {
-  //       authenticatedUser ? setUser(authenticatedUser) : setUser(null);
-  //       setIsLoading(false);
-  //     },
-  //   );
-  //   return unsubscribeAuth;
-  // }, [user]);
+  const onAuthStateChanged = user => {
+    setUser(user);
+  };
 
-  if (!isLoading) {
+  useEffect(() => {
+    const unsubscribeAuth = auth().onAuthStateChanged(onAuthStateChanged);
+    return unsubscribeAuth;
+  }, [user]);
+
+  if (isLoading) {
     return (
       <View style={styles().AcivIndicator}>
         <ActivityIndicator size="large" />
       </View>
     );
-  }
-
-  return (
-    <NavigationContainer>
-      {user ? <ChatStack /> : <AuthStack />}
-    </NavigationContainer>
-  );
+  } else
+    return (
+      <NavigationContainer>
+        {user ? <ChatStack /> : <AuthStack />}
+      </NavigationContainer>
+    );
 };
 
 export default () => {

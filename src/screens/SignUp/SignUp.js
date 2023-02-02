@@ -1,30 +1,50 @@
 import React, {useState} from 'react';
 import {
-  StyleSheet,
   Text,
   View,
-  Button,
   TextInput,
   Image,
-  SafeAreaView,
   TouchableOpacity,
   StatusBar,
   Alert,
+  SafeAreaView,
 } from 'react-native';
 import styles from './styles';
-// import { createUserWithEmailAndPassword } from 'firebase/auth';
-// import { auth } from '../config/firebase';
 const backImage = require('../../assets/backImage.png');
+// firebase auth
+import auth from '@react-native-firebase/auth';
+// firestore
+import firestore from '@react-native-firebase/firestore';
 
-const SignUp = () => {
+const SignUp = ({navigation}) => {
+  const [username, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const HandleSignup = () => {
     if (email !== '' && password !== '') {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => console.log('Signup success'))
-        .catch(err => Alert.alert('Login error', err.message));
+      auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          console.log('User account created & signed in!');
+        })
+        .then(
+          firestore().collection('Users').add({
+            email,
+            username,
+          }),
+        )
+        .catch(error => {
+          if (error.Error === '[auth/email-already-in-use]') {
+            console.log('That email address is already in use!');
+          }
+          if (
+            error.Error === '[auth/invalid-email]' ||
+            '[auth/operation-not-allowrd]'
+          ) {
+            console.log('That email address is invalid!');
+          }
+        });
     }
   };
 
@@ -36,11 +56,20 @@ const SignUp = () => {
         <Text style={styles().title}>Sign Up</Text>
         <TextInput
           style={styles().input}
+          placeholder="Enter UserName"
+          autoCapitalize="none"
+          keyboardType="default"
+          textContentType="username"
+          autoFocus={true}
+          value={username}
+          onChangeText={text => setUserName(text)}
+        />
+        <TextInput
+          style={styles().input}
           placeholder="Enter email"
           autoCapitalize="none"
           keyboardType="email-address"
           textContentType="emailAddress"
-          autoFocus={true}
           value={email}
           onChangeText={text => setEmail(text)}
         />

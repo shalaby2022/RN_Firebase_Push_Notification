@@ -1,35 +1,51 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
   Text,
   View,
-  Button,
   TextInput,
-  Image,
-  SafeAreaView,
   TouchableOpacity,
   StatusBar,
-  Alert,
+  ImageBackground,
+  SafeAreaView,
 } from 'react-native';
 import styles from './styles';
-
-// import { signInWithEmailAndPassword } from 'firebase/auth'
-// import { auth } from '../config/firebase'
 const backImg = require('../../assets/backImage.png');
+import {AuthenticatedUserContext} from '../../Context/AuthContext';
+// firebase auth
+import auth from '@react-native-firebase/auth';
 
 const SignIn = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const {setIsLoading} = useContext(AuthenticatedUserContext);
 
   const HandleLogin = () => {
     if (email !== '' && password !== '') {
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => console.log('Login Success'))
-        .catch(err => Alert.alert('Login Error', err.message));
+      setIsLoading(true);
+      auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(() => {
+          setIsLoading(false);
+          console.log('Login Success');
+        })
+        .catch(error => {
+          if (error.Error === '[auth/email-already-in-use]') {
+            setIsLoading(false);
+            console.log('That email address is already in use!');
+          }
+          if (
+            error.Error === '[auth/invalid-email]' ||
+            '[auth/operation-not-allowrd]'
+          ) {
+            setIsLoading(false);
+            console.log('That email address is invalid!');
+          }
+        });
     }
   };
   return (
     <View style={styles().container}>
-      <Image source={backImg} style={styles().backImage} />
+      <ImageBackground source={backImg} style={styles().backImage} />
       <View style={styles().whiteSheet} />
       <SafeAreaView style={styles().form}>
         <Text style={styles().title}>Log In</Text>

@@ -1,6 +1,22 @@
 import {StyleSheet} from 'react-native';
+import colors from '../../../colors';
 
 export default () =>
   StyleSheet.create({
-    container: {},
+    headerRight: {
+      marginRight: 10,
+    },
+    logOutIcon: {
+      width: 26,
+      height: 26,
+      marginRight: 10,
+      tintColor: colors.gray,
+    },
+    textInputStyle: {
+      backgroundColor: '#fff',
+      borderRadius: 20,
+    },
+    messagesContainerStyle: {
+      backgroundColor: colors.mediumGray,
+    },
   });

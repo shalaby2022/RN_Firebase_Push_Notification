@@ -10,6 +10,16 @@ import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
 
+// importing firestore
+import io.invertase.firebase.firestore.ReactNativeFirebaseFirestorePackage;
+// importing arrays for firestore
+import java.util.Arrays;
+// importing mainreactpackage for fire store
+import com.facebook.react.shell.MainReactPackage;
+
+// importing RNScreen package
+import com.swmansion.rnscreens.RNScreensPackage;
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -21,11 +31,16 @@ public class MainApplication extends Application implements ReactApplication {
 
         @Override
         protected List<ReactPackage> getPackages() {
-          @SuppressWarnings("UnnecessaryLocalVariable")
-          List<ReactPackage> packages = new PackageList(this).getPackages();
+          return Arrays.asList(
+            new MainReactPackage(),
+            new ReactNativeFirebaseFirestorePackage(),
+            new RNScreensPackage()
+            );
+          // @SuppressWarnings("UnnecessaryLocalVariable")
+          // List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
-          return packages;
+          // return packages;
         }
 
         @Override
@@ -42,6 +57,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected Boolean isHermesEnabled() {
           return BuildConfig.IS_HERMES_ENABLED;
         }
+        
       };
 
   @Override

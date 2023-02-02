@@ -25,7 +25,7 @@ end
 target 'firebase' do
   config = use_native_modules!
   use_frameworks! :linkage => :static
-  # use_frameworks!
+  
 
   # Flags change depending on the env values.
   flags = get_default_flags()
@@ -60,4 +60,5 @@ target 'firebase' do
     )
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
+
 end
