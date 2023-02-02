@@ -26,23 +26,22 @@ const SignUp = ({navigation}) => {
       auth()
         .createUserWithEmailAndPassword(email, password)
         .then(() => {
-          console.log('User account created & signed in!');
+          Alert.alert('User account created & signed in!');
         })
         .then(
           firestore().collection('Users').add({
             email,
-            username,
+            displayName: username,
           }),
         )
         .catch(error => {
-          if (error.Error === '[auth/email-already-in-use]') {
-            console.log('That email address is already in use!');
-          }
-          if (
-            error.Error === '[auth/invalid-email]' ||
-            '[auth/operation-not-allowrd]'
+          if (error.code === 'auth/email-already-in-use') {
+            Alert.alert('That email address is already in use!');
+          } else if (
+            error.code === 'auth/invalid-email' ||
+            'auth/operation-not-allowrd'
           ) {
-            console.log('That email address is invalid!');
+            Alert.alert('That email address is invalid!');
           }
         });
     }

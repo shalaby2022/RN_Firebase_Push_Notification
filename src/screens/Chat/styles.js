@@ -17,6 +17,7 @@ export default () =>
       borderRadius: 20,
     },
     messagesContainerStyle: {
+      width: '95%',
       backgroundColor: colors.mediumGray,
     },
   });

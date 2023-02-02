@@ -48,7 +48,7 @@ export default () =>
       height: 60,
       marginBottom: 10,
       padding: 10,
-      backgroundColor: colors.mediumGray,
+      backgroundColor: '#eee',
       flexDirection: 'row',
       alignItems: 'center',
     },

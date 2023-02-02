@@ -4,10 +4,8 @@ import {GiftedChat} from 'react-native-gifted-chat';
 import {useNavigation} from '@react-navigation/native';
 import styles from './styles';
 const logout = require('../../assets/logout.png');
-// firebase auth
-import auth from '@react-native-firebase/auth';
-// firestore
 import firestore from '@react-native-firebase/firestore';
+import auth, {firebase} from '@react-native-firebase/auth';
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
@@ -30,11 +28,14 @@ const Chat = () => {
   }, [navigation]);
 
   useLayoutEffect(() => {
-    const collectionRef = firestore().collection('chat');
+    const collectionRef = firestore()
+      .collection('chat')
+      // .orderBy('createdAt', 'desc')
+      .get();
 
-    // const q = query(collectionRef, orderBy('createdAt', 'desc'));
+    console.log(collectionRef, 'collectionRef');
 
-    // const unsubscribe = onSnapshot(q, querySnapshot => {
+    // const unsubscribe = onSnapshot(querySnapshot => {
     // console.log('querySnapshot unsusbscribe');
     // setMessages(
     //   querySnapshot.docs.map(doc => ({
@@ -46,35 +47,46 @@ const Chat = () => {
     // );
     // });
     // return unsubscribe;
-    console.log('first');
   }, []);
 
+  useEffect(() => {
+    const getUSer = async () => {
+      const currentUser = await firebase.auth().currentUser;
+      console.log(currentUser.displayName, 'id');
+    };
+    getUSer();
+  }, []);
   const onSend = useCallback((messages = []) => {
-    // setMessages(previousMessages =>
-    //   GiftedChat.append(previousMessages, messages)
-    // );
-    // // setMessages([...messages, ...messages]);
-    // const { _id, createdAt, text, user } = messages[0];
-    // addDoc(collection(database, 'chats'), {
-    //   _id,
-    //   createdAt,
-    //   text,
-    //   user
-    // });
+    setMessages(previousMessages =>
+      GiftedChat.append(previousMessages, messages),
+    );
+    // setMessages([...messages, ...messages]);
+    const {_id, createdAt, text, user} = messages[0];
+    firestore()
+      .collection('chat')
+      .add({
+        _id,
+        createdAt,
+        text,
+        user: {
+          _id: '1',
+          displayName: 'username1',
+        },
+      });
   }, []);
 
   return (
     <GiftedChat
-      // messages={messages}
+      messages={messages}
       showAvatarForEveryMessage={false}
       showUserAvatar={false}
-      // onSend={messages => onSend(messages)}
+      onSend={messages => onSend(messages)}
       messagesContainerStyle={styles().messagesContainerStyle}
       textInputStyle={styles().textInputStyle}
-      // user={{
-      //   _id: auth?.currentUser?.email,
-      //   avatar: 'https://i.pravatar.cc/300',
-      // }}
+      user={{
+        _id: firebase.auth().currentUser?.displayName,
+        //   avatar: 'https://i.pravatar.cc/300',
+      }}
     />
   );
 };

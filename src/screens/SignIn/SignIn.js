@@ -7,6 +7,7 @@ import {
   StatusBar,
   ImageBackground,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import styles from './styles';
 const backImg = require('../../assets/backImage.png');
@@ -26,20 +27,20 @@ const SignIn = ({navigation}) => {
         .signInWithEmailAndPassword(email, password)
         .then(() => {
           setIsLoading(false);
-          console.log('Login Success');
+          Alert.alert('Login Success');
         })
         .catch(error => {
-          if (error.Error === '[auth/email-already-in-use]') {
+          if (error.code === 'auth/email-already-in-use') {
             setIsLoading(false);
-            console.log('That email address is already in use!');
-          }
-          if (
-            error.Error === '[auth/invalid-email]' ||
-            '[auth/operation-not-allowrd]'
+            Alert.alert('That email address is already in use!');
+          } else if (
+            error.code === 'auth/invalid-email' ||
+            'auth/operation-not-allowrd'
           ) {
             setIsLoading(false);
-            console.log('That email address is invalid!');
+            Alert.alert('That email address is invalid!');
           }
+          console.log(error);
         });
     }
   };
