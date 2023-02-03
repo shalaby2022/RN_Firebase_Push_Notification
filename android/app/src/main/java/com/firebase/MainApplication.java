@@ -10,13 +10,16 @@ import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
 
-// importing firestore
+// importing firebase
+import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
+// importing firestore app
 import io.invertase.firebase.firestore.ReactNativeFirebaseFirestorePackage;
+// importing firebase auth
+import io.invertase.firebase.auth.ReactNativeFirebaseAuthPackage;
 // importing arrays for firestore
 import java.util.Arrays;
 // importing mainreactpackage for fire store
 import com.facebook.react.shell.MainReactPackage;
-
 // importing RNScreen package
 import com.swmansion.rnscreens.RNScreensPackage;
 
@@ -33,7 +36,9 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
           return Arrays.asList(
             new MainReactPackage(),
+            new ReactNativeFirebaseAppPackage(),
             new ReactNativeFirebaseFirestorePackage(),
+            new ReactNativeFirebaseAuthPackage(),
             new RNScreensPackage()
             );
           // @SuppressWarnings("UnnecessaryLocalVariable")
@@ -57,7 +62,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected Boolean isHermesEnabled() {
           return BuildConfig.IS_HERMES_ENABLED;
         }
-        
+
       };
 
   @Override

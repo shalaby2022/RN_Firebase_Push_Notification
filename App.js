@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import React, {useContext, useEffect} from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Chat from './src/screens/Chat/Chat';
 import Home from './src/screens/Home/Home';
 import SignIn from './src/screens/SignIn/SignIn';
@@ -15,7 +15,7 @@ import {
 import auth from '@react-native-firebase/auth';
 import PushNotification from './src/utils/PushNotification';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 const ChatStack = () => {
   return (
@@ -36,7 +36,7 @@ const AuthStack = () => {
 };
 
 const RootNavigator = () => {
-  PushNotification();
+  // PushNotification();
   const {user, setUser, isLoading} = useContext(AuthenticatedUserContext);
   const onAuthStateChanged = user => {
     setUser(user);

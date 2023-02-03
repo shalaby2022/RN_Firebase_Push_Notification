@@ -17,6 +17,7 @@
     "@react-native-firebase/messaging": "^16.7.0",
     "@react-native-masked-view/masked-view": "^0.2.8",
     "@react-navigation/native": "^6.1.2",
+    "@react-navigation/native-stack": "^6.9.9",
     "@react-navigation/stack": "^6.3.11",
     "firebase": "^9.16.0",
     "firebase-tools": "^11.22.0",
