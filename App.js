@@ -1,4 +1,3 @@
-import 'react-native-gesture-handler';
 import React, {useContext, useEffect} from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
@@ -36,7 +35,7 @@ const AuthStack = () => {
 };
 
 const RootNavigator = () => {
-  // PushNotification();
+  PushNotification();
   const {user, setUser, isLoading} = useContext(AuthenticatedUserContext);
   const onAuthStateChanged = user => {
     setUser(user);

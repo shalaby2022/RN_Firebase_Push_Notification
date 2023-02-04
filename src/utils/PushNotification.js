@@ -44,7 +44,8 @@ export default () => {
     );
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('messaging', remoteMessage);
+      const {body, title, data} = remoteMessage;
+      console.log('messaging', remoteMessage, body, title, data);
       PushNotification.localNotification({
         channelId: 'channel-2',
         title: remoteMessage.notification.title, // (optional)
@@ -58,10 +59,11 @@ export default () => {
   }, []);
 
   PushNotification.configure({
-    onRegister: function (token) {
-      console.warn('TOKEN:', token);
+    onRegister: function (TOKEN) {
+      console.warn('TOKEN:', TOKEN.token);
     },
     onNotification: async function (notification) {
+      console.log('notification', notification);
       notification.finish(PushNotificationIOS.FetchResult.NoData);
     },
     onAction: function (notification) {

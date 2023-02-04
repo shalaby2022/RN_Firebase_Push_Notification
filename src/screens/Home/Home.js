@@ -45,7 +45,7 @@ const Home = () => {
       headerLeft: () => (
         <Image
           source={require('../../assets/search.png')}
-          style={[styles().icon, {marginLeft: 15}]}
+          style={[styles().icon, {marginHorizontal: 13}]}
         />
       ),
       headerRight: () => (

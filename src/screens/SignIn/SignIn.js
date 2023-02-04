@@ -8,6 +8,7 @@ import {
   ImageBackground,
   SafeAreaView,
   Alert,
+  Image,
 } from 'react-native';
 import styles from './styles';
 const backImg = require('../../assets/backImage.png');
@@ -45,10 +46,10 @@ const SignIn = ({navigation}) => {
     }
   };
   return (
-    <View style={styles().container}>
-      <ImageBackground source={backImg} style={styles().backImage} />
+    <SafeAreaView style={styles().container}>
+      <Image source={backImg} style={styles().backImage} resizeMode="cover" />
       <View style={styles().whiteSheet} />
-      <SafeAreaView style={styles().form}>
+      <View style={styles().form}>
         <Text style={styles().title}>Log In</Text>
         <TextInput
           style={styles().input}
@@ -79,9 +80,9 @@ const SignIn = ({navigation}) => {
             <Text style={styles().SignUpBtn}>Sign Up</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
       <StatusBar barStyle="light-content" />
-    </View>
+    </SafeAreaView>
   );
 };
 

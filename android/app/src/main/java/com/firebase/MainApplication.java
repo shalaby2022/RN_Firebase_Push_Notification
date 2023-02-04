@@ -10,18 +10,24 @@ import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
 
-// importing firebase
+// importing firebase app
 import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
-// importing firestore app
+// importing firestore
 import io.invertase.firebase.firestore.ReactNativeFirebaseFirestorePackage;
 // importing firebase auth
 import io.invertase.firebase.auth.ReactNativeFirebaseAuthPackage;
 // importing arrays for firestore
 import java.util.Arrays;
-// importing mainreactpackage for fire store
+// importing mainreactpackage for firestore
 import com.facebook.react.shell.MainReactPackage;
 // importing RNScreen package
 import com.swmansion.rnscreens.RNScreensPackage;
+// importing SafeAreaContextPackage for error handling
+import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
+// importing pushnotification package
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+// importing firebase messaging package
+import io.invertase.firebase.messaging.ReactNativeFirebaseMessagingPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -36,10 +42,13 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
           return Arrays.asList(
             new MainReactPackage(),
+            new SafeAreaContextPackage(),
+            new RNScreensPackage(),
             new ReactNativeFirebaseAppPackage(),
+            new ReactNativePushNotificationPackage(),
+            new ReactNativeFirebaseMessagingPackage(),
             new ReactNativeFirebaseFirestorePackage(),
-            new ReactNativeFirebaseAuthPackage(),
-            new RNScreensPackage()
+            new ReactNativeFirebaseAuthPackage()
             );
           // @SuppressWarnings("UnnecessaryLocalVariable")
           // List<ReactPackage> packages = new PackageList(this).getPackages();
