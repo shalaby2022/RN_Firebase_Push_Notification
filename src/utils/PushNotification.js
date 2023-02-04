@@ -60,17 +60,18 @@ export default () => {
 
   PushNotification.configure({
     onRegister: function (TOKEN) {
-      console.warn('TOKEN:', TOKEN.token);
+      const {os, token} = TOKEN;
+      console.warn('TOKEN:', token);
     },
     onNotification: async function (notification) {
       console.log('notification', notification);
       notification.finish(PushNotificationIOS.FetchResult.NoData);
     },
     onAction: function (notification) {
-      console.log('onAction');
+      console.log('onAction', notification);
     },
     onRegistrationError: function (err) {
-      console.error(err.message, err);
+      console.error('onRegistrationError', err.message, err);
     },
     permissions: {
       alert: true,

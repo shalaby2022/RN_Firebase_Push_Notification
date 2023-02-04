@@ -12,7 +12,7 @@ import {
 import styles from './styles';
 const backImage = require('../../assets/backImage.png');
 // firebase auth
-import auth from '@react-native-firebase/auth';
+import auth, {firebase} from '@react-native-firebase/auth';
 // firestore
 import firestore from '@react-native-firebase/firestore';
 
@@ -28,8 +28,13 @@ const SignUp = ({navigation}) => {
         .then(() => {
           Alert.alert('User account created & signed in!');
         })
-        .then(
-          firestore().collection('Users').add({
+        .then(() =>
+          firebase.auth().currentUser.updateProfile({
+            displayName: username,
+          }),
+        )
+        .then(() =>
+          firestore().collection('users').add({
             email,
             displayName: username,
           }),

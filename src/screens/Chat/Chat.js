@@ -28,11 +28,8 @@ const Chat = () => {
   }, [navigation]);
 
   useLayoutEffect(() => {
-    const collectionRef = firestore()
-      .collection('chat')
-      // .orderBy('createdAt', 'desc')
-      .get();
-
+    const collectionRef = firestore().collection('chat');
+    // .orderBy('createdAt', 'desc')
     console.log(collectionRef, 'collectionRef');
 
     // const unsubscribe = onSnapshot(querySnapshot => {
@@ -52,16 +49,18 @@ const Chat = () => {
   useEffect(() => {
     const getUSer = async () => {
       const currentUser = await firebase.auth().currentUser;
-      console.log(currentUser.displayName, 'id');
+      console.log(currentUser, 'id');
     };
     getUSer();
   }, []);
+
   const onSend = useCallback((messages = []) => {
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, messages),
     );
     // setMessages([...messages, ...messages]);
     const {_id, createdAt, text, user} = messages[0];
+    console.log(_id, '_id');
     firestore()
       .collection('chat')
       .add({

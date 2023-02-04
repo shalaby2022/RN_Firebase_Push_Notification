@@ -31,7 +31,7 @@ const Home = () => {
     const fetchData = async () => {
       const currentUser = await firebase.auth().currentUser;
       firestore()
-        .collection('Users')
+        .collection('users')
         .where('email', '!=', currentUser.email)
         .onSnapshot(onResult, onError);
       setUsers(users);
