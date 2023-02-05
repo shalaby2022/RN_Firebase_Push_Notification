@@ -1,20 +1,21 @@
-import React, {useState, useEffect, useLayoutEffect, useCallback} from 'react';
+import React, {useState, useLayoutEffect, useCallback} from 'react';
 import {TouchableOpacity, Image} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';
-import {useNavigation} from '@react-navigation/native';
 import styles from './styles';
 const logout = require('../../assets/logout.png');
 import firestore from '@react-native-firebase/firestore';
 import auth, {firebase} from '@react-native-firebase/auth';
+import {toaster} from '../../utils/Toaster';
 
-const Chat = () => {
+const Chat = ({navigation}) => {
   const [messages, setMessages] = useState([]);
-  const navigation = useNavigation();
 
   const onSignOut = () => {
     auth()
       .signOut()
-      .then(() => console.log('signed out Successfully!'));
+      .then(() =>
+        toaster('signed out Successfully!', {color: 'orange', duration: 2000}),
+      );
   };
 
   useLayoutEffect(() => {
@@ -28,50 +29,38 @@ const Chat = () => {
   }, [navigation]);
 
   useLayoutEffect(() => {
-    const collectionRef = firestore().collection('chat');
-    // .orderBy('createdAt', 'desc')
-    console.log(collectionRef, 'collectionRef');
+    const subscribe = firestore()
+      .collection('chat')
+      .where('user._id', 'in', [
+        firebase.auth().currentUser.email,
+        navigation?.getState()?.routes[1]?.params?.receiver?.email,
+      ])
+      .onSnapshot(querySnapshot => {
+        setMessages(
+          querySnapshot.docs.map(doc => ({
+            _id: doc.data()._id,
+            createdAt: doc.data().createdAt.toDate(),
+            text: doc.data().text,
+            user: doc.data().user,
+          })),
+        );
+      });
 
-    // const unsubscribe = onSnapshot(querySnapshot => {
-    // console.log('querySnapshot unsusbscribe');
-    // setMessages(
-    //   querySnapshot.docs.map(doc => ({
-    //     _id: doc.data()._id,
-    //     createdAt: doc.data().createdAt.toDate(),
-    //     text: doc.data().text,
-    //     user: doc.data().user,
-    //   })),
-    // );
-    // });
-    // return unsubscribe;
-  }, []);
-
-  useEffect(() => {
-    const getUSer = async () => {
-      const currentUser = await firebase.auth().currentUser;
-      console.log(currentUser, 'id');
-    };
-    getUSer();
+    return subscribe;
   }, []);
 
   const onSend = useCallback((messages = []) => {
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, messages),
     );
-    // setMessages([...messages, ...messages]);
     const {_id, createdAt, text, user} = messages[0];
-    console.log(_id, '_id');
-    firestore()
-      .collection('chat')
-      .add({
-        _id,
-        createdAt,
-        text,
-        user: {
-          _id: '1',
-          displayName: 'username1',
-        },
-      });
+    firestore().collection('chat').add({
+      _id,
+      createdAt,
+      text,
+      user,
+      receiver: navigation?.getState()?.routes[1]?.params?.receiver?.email,
+    });
   }, []);
 
   return (
@@ -83,8 +72,7 @@ const Chat = () => {
       messagesContainerStyle={styles().messagesContainerStyle}
       textInputStyle={styles().textInputStyle}
       user={{
-        _id: firebase.auth().currentUser?.displayName,
-        //   avatar: 'https://i.pravatar.cc/300',
+        _id: firebase.auth()?.currentUser?.email,
       }}
     />
   );

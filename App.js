@@ -13,9 +13,9 @@ import {
 } from './src/Context/AuthContext';
 import auth from '@react-native-firebase/auth';
 import PushNotification from './src/utils/PushNotification';
+import {RootSiblingParent} from 'react-native-root-siblings';
 
 const Stack = createNativeStackNavigator();
-
 const ChatStack = () => {
   return (
     <Stack.Navigator defaultScreenOptions={Home}>
@@ -63,7 +63,9 @@ const RootNavigator = () => {
 export default () => {
   return (
     <AuthenticatedUserProvider>
-      <RootNavigator />
+      <RootSiblingParent>
+        <RootNavigator />
+      </RootSiblingParent>
     </AuthenticatedUserProvider>
   );
 };

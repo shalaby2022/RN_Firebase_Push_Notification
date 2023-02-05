@@ -15,6 +15,7 @@ const backImg = require('../../assets/backImage.png');
 import {AuthenticatedUserContext} from '../../Context/AuthContext';
 // firebase auth
 import auth from '@react-native-firebase/auth';
+import {toaster} from '../../utils/Toaster';
 
 const SignIn = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -28,20 +29,25 @@ const SignIn = ({navigation}) => {
         .signInWithEmailAndPassword(email, password)
         .then(() => {
           setIsLoading(false);
-          Alert.alert('Login Success');
+          toaster('Login Success', {color: '#000', duration: 2000});
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
             setIsLoading(false);
-            Alert.alert('That email address is already in use!');
+            toaster('That email address is already in use!', {
+              color: '#000',
+              duration: 2000,
+            });
           } else if (
             error.code === 'auth/invalid-email' ||
             'auth/operation-not-allowrd'
           ) {
             setIsLoading(false);
-            Alert.alert('That email address is invalid!');
+            toaster('That email address is invalid!', {
+              color: '#000',
+              duration: 2000,
+            });
           }
-          console.log(error);
         });
     }
   };

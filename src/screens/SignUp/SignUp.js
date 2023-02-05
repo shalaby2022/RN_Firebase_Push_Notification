@@ -15,6 +15,7 @@ const backImage = require('../../assets/backImage.png');
 import auth, {firebase} from '@react-native-firebase/auth';
 // firestore
 import firestore from '@react-native-firebase/firestore';
+import {toaster} from '../../utils/Toaster';
 
 const SignUp = ({navigation}) => {
   const [username, setUserName] = useState('');
@@ -41,12 +42,18 @@ const SignUp = ({navigation}) => {
         )
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
-            Alert.alert('That email address is already in use!');
+            toaster('That email address is already in use!', {
+              color: '#000',
+              duration: 2000,
+            });
           } else if (
             error.code === 'auth/invalid-email' ||
             'auth/operation-not-allowrd'
           ) {
-            Alert.alert('That email address is invalid!');
+            toaster('That email address is invalid!', {
+              color: '#000',
+              duration: 2000,
+            });
           }
         });
     }

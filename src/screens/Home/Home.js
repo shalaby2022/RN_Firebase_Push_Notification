@@ -60,7 +60,7 @@ const Home = () => {
       users && (
         <TouchableOpacity
           style={styles().userChat}
-          onPress={() => console.log(item.displayName)}>
+          onPress={() => navigation.navigate('Chat', {receiver: item})}>
           <View style={styles().imgWrapper}>
             <Image source={profil} style={styles().userImg} />
           </View>
