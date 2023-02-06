@@ -3,6 +3,7 @@ import {TouchableOpacity, Image} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';
 import styles from './styles';
 const logout = require('../../assets/logout.png');
+const cat = require('../../assets/profile.png');
 import firestore from '@react-native-firebase/firestore';
 import auth, {firebase} from '@react-native-firebase/auth';
 import {toaster} from '../../utils/Toaster';
@@ -54,20 +55,25 @@ const Chat = ({navigation}) => {
       GiftedChat.append(previousMessages, messages),
     );
     const {_id, createdAt, text, user} = messages[0];
-    firestore().collection('chat').add({
-      _id,
-      createdAt,
-      text,
-      user,
-      receiver: navigation?.getState()?.routes[1]?.params?.receiver?.email,
-    });
+    firestore()
+      .collection('chat')
+      .add({
+        _id,
+        createdAt,
+        text,
+        user: {
+          _id: firebase.auth()?.currentUser?.email,
+          avatar: 'https://placeimg.com/140/140/any',
+        },
+        receiver: navigation?.getState()?.routes[1]?.params?.receiver?.email,
+      });
   }, []);
 
   return (
     <GiftedChat
       messages={messages}
-      showAvatarForEveryMessage={false}
-      showUserAvatar={false}
+      showAvatarForEveryMessage={true}
+      showUserAvatar={true}
       onSend={messages => onSend(messages)}
       messagesContainerStyle={styles().messagesContainerStyle}
       textInputStyle={styles().textInputStyle}
