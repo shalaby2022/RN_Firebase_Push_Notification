@@ -23,7 +23,7 @@ const Home = () => {
   };
 
   const onError = error => {
-    console.error('error', error);
+    console.error('error in Home page', error);
   };
 
   //  initializing users in Homescreen
