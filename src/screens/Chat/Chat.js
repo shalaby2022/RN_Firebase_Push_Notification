@@ -1,9 +1,9 @@
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import React, {useState, useLayoutEffect, useCallback} from 'react';
 import {TouchableOpacity, Image} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';
 import styles from './styles';
 const logout = require('../../assets/logout.png');
-const cat = require('../../assets/profile.png');
 import firestore from '@react-native-firebase/firestore';
 import auth, {firebase} from '@react-native-firebase/auth';
 import {toaster} from '../../utils/Toaster';
@@ -43,6 +43,7 @@ const Chat = ({navigation}) => {
             createdAt: doc.data().createdAt.toDate(),
             text: doc.data().text,
             user: doc.data().user,
+            image: doc.data().image,
           })),
         );
       });
@@ -54,7 +55,7 @@ const Chat = ({navigation}) => {
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, messages),
     );
-    const {_id, createdAt, text, user} = messages[0];
+    const {_id, createdAt, text} = messages[0];
     firestore()
       .collection('chat')
       .add({
@@ -65,22 +66,28 @@ const Chat = ({navigation}) => {
           _id: firebase.auth()?.currentUser?.email,
           avatar: 'https://placeimg.com/140/140/any',
         },
+        image: galleryPhoto,
+        // image: galleryPhoto ? galleryPhoto : null,
         receiver: navigation?.getState()?.routes[1]?.params?.receiver?.email,
       });
   }, []);
 
   return (
-    <GiftedChat
-      messages={messages}
-      showAvatarForEveryMessage={true}
-      showUserAvatar={true}
-      onSend={messages => onSend(messages)}
-      messagesContainerStyle={styles().messagesContainerStyle}
-      textInputStyle={styles().textInputStyle}
-      user={{
-        _id: firebase.auth()?.currentUser?.email,
-      }}
-    />
+    <>
+      <GiftedChat
+        messages={messages}
+        showAvatarForEveryMessage={true}
+        showUserAvatar={true}
+        onSend={messages => onSend(messages)}
+        messagesContainerStyle={styles().messagesContainerStyle}
+        textInputStyle={styles().textInputStyle}
+        user={{
+          _id: firebase.auth()?.currentUser?.email,
+        }}
+        alignTop={true}
+        minComposerHeight={30}
+      />
+    </>
   );
 };
 

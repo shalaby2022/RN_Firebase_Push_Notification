@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, TouchableOpacity, Image, Text, FlatList} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import styles from './styles';
-const chatImg = require('../../assets/messenger.png');
+const photoImg = require('../../assets/camera.png');
 const profil = require('../../assets/profile.png');
 const catImageUrl =
   'https://i.guim.co.uk/img/media/26392d05302e02f7bf4eb143bb84c8097d09144b/446_167_3683_2210/master/3683.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=49ed3252c0b2ffb49cf8b508892e452d';
@@ -78,9 +78,9 @@ const Home = () => {
         keyExtractor={(item, ind) => ind.toString()}
       />
       <TouchableOpacity
-        onPress={() => navigation.navigate('Chat')}
+        onPress={() => navigation.navigate('Storage')}
         style={styles().chatButton}>
-        <Image source={chatImg} style={styles().chatIcon} />
+        <Image source={photoImg} style={styles().chatIcon} />
       </TouchableOpacity>
     </View>
   );
