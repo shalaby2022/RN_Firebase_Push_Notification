@@ -94,7 +94,7 @@ const PhotoUploader = () => {
     try {
       task;
     } catch (er) {
-      console.log(`Error occured ${err.message}`);
+      Alert.alert(`Error occured ${err.message}`);
     }
     setUploading(false);
     Alert.alert('Image Uploaded Successfully');
@@ -108,7 +108,7 @@ const PhotoUploader = () => {
   };
 
   const noImgToEdit = () => {
-    Alert.alert('Select Image for Editind ..!');
+    Alert.alert('Select Image for Editing ..!');
   };
 
   const EditPhoto = async () => {
@@ -120,6 +120,7 @@ const PhotoUploader = () => {
       console.log('result', result);
     } catch (er) {
       Alert.alert(er.message);
+      console.log(er.message);
     }
   };
   return (
