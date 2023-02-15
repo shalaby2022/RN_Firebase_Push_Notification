@@ -7,16 +7,19 @@ import {
   Image,
   PermissionsAndroid,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import styles from './styles';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
+import PhotoEditor from '@baronha/react-native-photo-editor';
 
 const PhotoUploader = () => {
   const [camIamge, setCamImage] = useState(null);
   const [galleryImg, setGalleryImg] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [urlImg, setUrlImg] = useState(null);
+  const [edited, setEdited] = useState(null);
   let options = {
     saveToPhotos: true,
     cameraType: 'photo',
@@ -78,14 +81,15 @@ const PhotoUploader = () => {
     }
   };
 
-  const UplaodGallery = async () => {
+  const uploadImg = async image => {
     setUploading(true);
-    const response = await fetch(galleryImg);
+    const response = await fetch(image);
     const blob = await response.blob();
-    const fileName = galleryImg.slice(galleryImg.lastIndexOf('/') + 1);
+    const fileName = image.slice(image.lastIndexOf('/') + 1);
     let reference = storage().ref(fileName);
     const task = await reference.put(blob);
     let url = await reference.getDownloadURL();
+    console.log('URL', url);
     setUrlImg(url);
     try {
       task;
@@ -96,70 +100,94 @@ const PhotoUploader = () => {
     Alert.alert('Image Uploaded Successfully');
     setCamImage(null);
     setGalleryImg(null);
+    setEdited(null);
   };
 
-  const UplaodCamera = async () => {
-    setUploading(true);
-    const response = await fetch(galleryImg);
-    const blob = await response.blob();
-    const fileName = camIamge.slice(camIamge.lastIndexOf('/') + 1);
-    let reference = storage().ref(fileName);
-    const task = await reference.put(blob);
-    let url = await reference.getDownloadURL();
-    setUrlImg(url);
+  const noImgToUpload = () => {
+    Alert.alert('Select Image for Uploading ..!');
+  };
+
+  const noImgToEdit = () => {
+    Alert.alert('Select Image for Editind ..!');
+  };
+
+  const EditPhoto = async () => {
     try {
-      task;
+      const result = await PhotoEditor.open({
+        path: galleryImg || camIamge,
+      });
+      setEdited(result);
+      console.log('result', result);
     } catch (er) {
-      console.log(`Error occured ${err.message}`);
+      Alert.alert(er.message);
     }
-    setUploading(false);
-    Alert.alert('Image Uploaded Successfully');
-    setCamImage(null);
-    setGalleryImg(null);
   };
-
-  const noImgSelected = () => {
-    Alert.alert('Select Image to Upload');
-  };
-
   return (
-    <View style={{flex: 1}}>
-      <View style={styles().btnsWrapper}>
-        <TouchableOpacity style={styles().btnStyle} onPress={openCamera}>
-          <Text style={styles().btnText}>Open Camera</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles().btnStyle} onPress={openGallery}>
-          <Text style={styles().btnText}>Open Gallery</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles().btnsWrapper}>
-        <Image
-          source={{uri: camIamge}}
-          resizeMode="cover"
-          style={styles().imgStyles}
-        />
-        <Image
-          source={{uri: galleryImg}}
-          resizeMode="cover"
-          style={styles().imgStyles}
-        />
-      </View>
-      <TouchableOpacity
-        style={styles().sendBtnStyle}
-        onPress={
-          camIamge ? UplaodCamera : galleryImg ? UplaodGallery : noImgSelected
-        }>
-        <Text style={styles().sendBtnText}>Uplaod</Text>
-      </TouchableOpacity>
-      <View style={styles().uploadWrapper}>
-        <Text style={styles().uploadedText}>Image From Firebase Storage</Text>
-        <Image
-          source={{uri: urlImg}}
-          resizeMode="cover"
-          style={styles().imgStyles}
-        />
-      </View>
-    </View>
+    <>
+      {uploading ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <View style={{flex: 1}}>
+          <View style={styles().btnsWrapper}>
+            <TouchableOpacity style={styles().btnStyle} onPress={openCamera}>
+              <Text style={styles().btnText}>Open Camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles().btnStyle} onPress={openGallery}>
+              <Text style={styles().btnText}>Open Gallery</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles().btnsWrapper}>
+            <Image
+              source={{uri: camIamge}}
+              resizeMode="cover"
+              style={styles().imgStyles}
+            />
+            <Image
+              source={{uri: galleryImg}}
+              resizeMode="cover"
+              style={styles().imgStyles}
+            />
+          </View>
+          <TouchableOpacity
+            style={styles().sendBtnStyle}
+            onPress={
+              edited
+                ? () => uploadImg(edited)
+                : galleryImg
+                ? () => uploadImg(galleryImg)
+                : camIamge
+                ? () => uploadImg(camIamge)
+                : noImgToUpload
+            }>
+            <Text style={styles().sendBtnText}>Uplaod</Text>
+          </TouchableOpacity>
+          <View style={styles().uploadWrapper}>
+            <Text style={styles().uploadedText}>
+              Image From Firebase Storage
+            </Text>
+            <Image
+              source={{uri: urlImg}}
+              resizeMode="cover"
+              style={styles().imgStyles}
+            />
+          </View>
+
+          <TouchableOpacity
+            style={styles().sendBtnStyle}
+            onPress={galleryImg || camIamge ? EditPhoto : noImgToEdit}>
+            <Text style={styles().sendBtnText}>Edit</Text>
+          </TouchableOpacity>
+          <View style={styles().uploadWrapper}>
+            <Text style={styles().uploadedText}>Edited image</Text>
+            <Image
+              source={{uri: edited}}
+              resizeMode="cover"
+              style={styles().imgStyles}
+            />
+          </View>
+        </View>
+      )}
+    </>
   );
 };
 
