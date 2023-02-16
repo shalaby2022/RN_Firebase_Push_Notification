@@ -32,6 +32,10 @@ import io.invertase.firebase.messaging.ReactNativeFirebaseMessagingPackage;
 import io.invertase.firebase.storage.ReactNativeFirebaseStoragePackage;
 // importing image picker package
 import com.imagepicker.ImagePickerPackage;
+// importing RNFS package for photo edit help
+import com.rnfs.RNFSPackage;
+// importing RNFblob package
+import com.RNFetchBlob.RNFetchBlobPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -48,7 +52,9 @@ public class MainApplication extends Application implements ReactApplication {
             new MainReactPackage(),
             new SafeAreaContextPackage(),
             new ImagePickerPackage(),
+            new RNFSPackage(),
             new RNScreensPackage(),
+            new RNFetchBlobPackage(),
             new ReactNativeFirebaseAppPackage(),
             new ReactNativePushNotificationPackage(),
             new ReactNativeFirebaseMessagingPackage(),

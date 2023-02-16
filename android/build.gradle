@@ -5,7 +5,7 @@ buildscript {
     ext {
         buildToolsVersion = "33.0.0"
         // kotlin for supporting RN photo edit package
-        kotlinVersion = "1.7.0"
+        // kotlinVersion = "1.7.0"
         minSdkVersion = 21
         compileSdkVersion = 33
         targetSdkVersion = 33
@@ -17,6 +17,7 @@ buildscript {
   
     }
     repositories {
+        maven { url "https://jitpack.io" }
         google()
         mavenCentral()
     } 
@@ -30,6 +31,7 @@ buildscript {
 
 allprojects {
   repositories {
+    maven { url "https://jitpack.io" }
     google()  // Google's Maven repository
     mavenCentral()  // Maven Central repository
   }

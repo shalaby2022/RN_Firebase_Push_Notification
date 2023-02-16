@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useState} from 'react';
 import {
   View,
@@ -12,7 +12,9 @@ import {
 import styles from './styles';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import storage from '@react-native-firebase/storage';
-import PhotoEditor from '@baronha/react-native-photo-editor';
+// import PhotoEditor from '@baronha/react-native-photo-editor';
+import PhotoEditor from 'react-native-photo-editor';
+import RNFS from 'react-native-fs';
 
 const PhotoUploader = () => {
   const [camIamge, setCamImage] = useState(null);
@@ -111,18 +113,48 @@ const PhotoUploader = () => {
     Alert.alert('Select Image for Editing ..!');
   };
 
-  const EditPhoto = async () => {
+  // const EditPhoto = async () => {
+  //   console.log('Edit');
+  //   try {
+  //     const result = await PhotoEditor.open({
+  //       path: galleryImg || camIamge,
+  //     });
+  //     setEdited(result);
+  //     console.log('result', result);
+  //   } catch (er) {
+  //     Alert.alert(er.message);
+  //     console.log(er.message);
+  //   }
+  // };
+
+  const EditPhoto = () => {
     try {
-      const result = await PhotoEditor.open({
-        path: galleryImg || camIamge,
+      const result = PhotoEditor.Edit({
+        path: '../../assets/profile.png',
+        // colors: undefined,
+        onCancel: () => {
+          console.log('Canceled');
+        },
+        onDone: () => {
+          console.log('Done');
+        },
       });
-      setEdited(result);
+      // setEdited(result);
       console.log('result', result);
     } catch (er) {
-      Alert.alert(er.message);
       console.log(er.message);
     }
   };
+
+  useEffect(() => {
+    let photoPath = !camIamge ? RNFS.DocumentDirectoryPath : camIamge;
+    console.log('photoPath', photoPath);
+    if (camIamge) {
+      let binaryFile = Image.resolveAssetSource({uri: camIamge});
+      console.log('binaryFile', binaryFile);
+    }
+  }, [camIamge]);
+
   return (
     <>
       {uploading ? (
