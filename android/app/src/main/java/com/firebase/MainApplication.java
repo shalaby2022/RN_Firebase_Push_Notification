@@ -28,6 +28,10 @@ import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 // importing firebase messaging package
 import io.invertase.firebase.messaging.ReactNativeFirebaseMessagingPackage;
+// importing firebase storage package
+import io.invertase.firebase.storage.ReactNativeFirebaseStoragePackage;
+// importing image picker package
+import com.imagepicker.ImagePickerPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -43,11 +47,13 @@ public class MainApplication extends Application implements ReactApplication {
           return Arrays.asList(
             new MainReactPackage(),
             new SafeAreaContextPackage(),
+            new ImagePickerPackage(),
             new RNScreensPackage(),
             new ReactNativeFirebaseAppPackage(),
             new ReactNativePushNotificationPackage(),
             new ReactNativeFirebaseMessagingPackage(),
             new ReactNativeFirebaseFirestorePackage(),
+            new ReactNativeFirebaseStoragePackage(),
             new ReactNativeFirebaseAuthPackage()
             );
           // @SuppressWarnings("UnnecessaryLocalVariable")

@@ -5,9 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StatusBar,
-  ImageBackground,
   SafeAreaView,
-  Alert,
   Image,
 } from 'react-native';
 import styles from './styles';

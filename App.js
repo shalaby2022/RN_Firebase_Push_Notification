@@ -14,13 +14,16 @@ import {
 import auth from '@react-native-firebase/auth';
 import PushNotification from './src/utils/PushNotification';
 import {RootSiblingParent} from 'react-native-root-siblings';
+import PhotoUploader from './src/screens/Storage';
 
 const Stack = createNativeStackNavigator();
+
 const ChatStack = () => {
   return (
     <Stack.Navigator defaultScreenOptions={Home}>
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Chat" component={Chat} />
+      <Stack.Screen name="Storage" component={PhotoUploader} />
     </Stack.Navigator>
   );
 };
